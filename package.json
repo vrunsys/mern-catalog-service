@@ -31,6 +31,7 @@
 		"config": "^5.0.1",
 		"express": "^5.2.1",
 		"http-errors": "^2.0.1",
+		"mongoose": "^9.10.0",
 		"supertest": "^7.2.2",
 		"uuid": "^14.0.2",
 		"winston": "^3.19.0"

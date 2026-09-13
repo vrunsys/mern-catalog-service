@@ -1,9 +1,11 @@
 import config from "config";
 import app from "./app";
+import initDb from "./config/db";
 import logger from "./config/logger";
 
-const startServer = () => {
+const startServer = async () => {
 	try {
+		await initDb();
 		app.listen(config.get("service.port"), () => {
 			logger.info(`Server is running on port ${config.get("service.port")}`);
 		});
@@ -13,4 +15,4 @@ const startServer = () => {
 	}
 };
 
-startServer();
+await startServer();
