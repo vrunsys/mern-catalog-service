@@ -20,6 +20,6 @@ export class CategoryController {
 			attributes,
 		});
 		logger.info("Category created", { id: category._id });
-		res.status(201).json({ _id: category._id });
+		res.status(201).json({ id: category._id });
 	}
 }
