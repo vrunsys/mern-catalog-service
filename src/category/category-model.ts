@@ -20,8 +20,8 @@ export interface Attribute {
 	options?: string[];
 }
 
-const prizeConfigurationSchema = new mongoose.Schema<PrizeConfiguration>({
-	type: { type: String, required: true },
+const prizeConfigurationSchema = new mongoose.Schema({
+	priceType: { type: String, enum: ["base", "additional"], required: true },
 	options: { type: [String], required: true },
 });
 
@@ -39,7 +39,7 @@ const categorySchema = new mongoose.Schema<Category>({
 		of: prizeConfigurationSchema,
 		required: true,
 	},
-	attributes: { type: [Object], required: true },
+	attributes: { type: [attributeSchema], required: true },
 });
 
 export default mongoose.model<Category>("Category", categorySchema);
