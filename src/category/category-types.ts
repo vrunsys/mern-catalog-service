@@ -25,3 +25,13 @@ export interface CreateCategoryBody {
 export interface CreateCategoryRequest extends Request {
 	body: CreateCategoryBody;
 }
+
+export interface UpdateCategoryBody extends Partial<CreateCategoryBody> {}
+
+export type UpdateCategoryRequest = Request<
+	{ id: string },
+	unknown,
+	UpdateCategoryBody
+>;
+
+export type CategoryParamsRequest = Request<{ id: string }>;

@@ -19,4 +19,29 @@ router.post(
 	asyncWrapper(categoryController.create.bind(categoryController)),
 );
 
+router.patch(
+	"/:id",
+	authenticate,
+	canAccess([Role.ADMIN]),
+	categoryValidator,
+	asyncWrapper(categoryController.update.bind(categoryController)),
+);
+
+router.get(
+	"/",
+	asyncWrapper(categoryController.getAll.bind(categoryController)),
+);
+
+router.get(
+	"/:id",
+	asyncWrapper(categoryController.getOne.bind(categoryController)),
+);
+
+router.delete(
+	"/:id",
+	authenticate,
+	canAccess([Role.ADMIN]),
+	asyncWrapper(categoryController.delete.bind(categoryController)),
+);
+
 export default router;
