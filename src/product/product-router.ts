@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import { Router } from "express";
 import { Role } from "../constants";
 import authenticate from "../middleware/authenticate";
@@ -30,11 +30,47 @@ const productController = new ProductController(productService, cloudService);
 router.post(
 	"/",
 	authenticate,
-	canAccess([Role.ADMIN]),
+	canAccess([Role.ADMIN, Role.MANAGER]),
 	upload.single("image"),
 	parseFormFields,
 	productValidator,
-	asyncWrapper(productController.create.bind(productController)),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncWrapper(productController.create.bind(productController) as any),
+);
+
+router.patch(
+	"/:id",
+	authenticate,
+	canAccess([Role.ADMIN, Role.MANAGER]),
+	upload.single("image"),
+	parseFormFields,
+	productValidator,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncWrapper(productController.update.bind(productController) as any),
+);
+
+router.get(
+	"/",
+	authenticate,
+	canAccess([Role.ADMIN, Role.MANAGER]),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncWrapper(productController.getAll.bind(productController) as any),
+);
+
+router.get(
+	"/:id",
+	authenticate,
+	canAccess([Role.ADMIN, Role.MANAGER]),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncWrapper(productController.getOne.bind(productController) as any),
+);
+
+router.delete(
+	"/:id",
+	authenticate,
+	canAccess([Role.ADMIN, Role.MANAGER]),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	asyncWrapper(productController.delete.bind(productController) as any),
 );
 
 export default router;
