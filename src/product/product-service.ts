@@ -2,6 +2,8 @@ import createHttpError from "http-errors";
 import ProductModel from "./product-model";
 import type {
 	CreateProductBody,
+	PaginatedResult,
+	PaginationOptions,
 	ProductFilter,
 	UpdateProductBody,
 } from "./product-types";
@@ -31,8 +33,22 @@ export class ProductService {
 		return product;
 	}
 
-	async getAll(filter: ProductFilter = {}) {
-		return await ProductModel.find(filter).select("-__v");
+	async getAll(
+		filter: ProductFilter = {},
+		{ page, limit }: PaginationOptions = { page: 1, limit: 10 },
+	): Promise<PaginatedResult<(typeof ProductModel)["prototype"]>> {
+		const skip = (page - 1) * limit;
+		const [data, total] = await Promise.all([
+			ProductModel.find(filter).select("-__v").skip(skip).limit(limit),
+			ProductModel.countDocuments(filter),
+		]);
+		return {
+			data,
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+		};
 	}
 
 	async getOne(id: string, tenantId?: string | null) {

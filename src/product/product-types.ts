@@ -52,11 +52,26 @@ export interface ProductFilter {
 	name?: { $regex: string; $options: string };
 }
 
+export interface PaginationOptions {
+	page: number;
+	limit: number;
+}
+
+export interface PaginatedResult<T> {
+	data: T[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
+}
+
 export type GetAllProductsRequest = AuthRequest & {
 	query: {
 		q?: string;
 		tenantId?: string;
 		categoryId?: string;
 		isPublish?: string;
+		page?: string;
+		limit?: string;
 	};
 };

@@ -74,7 +74,7 @@ export class ProductController {
 	}
 
 	async getAll(req: GetAllProductsRequest, res: Response, next: NextFunction) {
-		const { q, tenantId, categoryId, isPublish } = req.query;
+		const { q, tenantId, categoryId, isPublish, page, limit } = req.query;
 
 		const filter: ProductFilter = {};
 
@@ -87,17 +87,24 @@ export class ProductController {
 		if (req.auth.role === Role.MANAGER) {
 			filter.tenantId = String(req.auth.tenantId);
 		} else if (tenantId) {
-			// Admin can optionally filter by tenantId via query
 			filter.tenantId = tenantId;
 		}
 
 		if (categoryId) filter.categoryId = categoryId;
 		if (isPublish !== undefined) filter.isPublish = isPublish === "true";
 
-		logger.info("Fetching products", { filter });
-		const products = await this.productService.getAll(filter);
-		logger.info("Fetched all products", { count: products.length });
-		res.json(products);
+		const pagination = {
+			page: Math.max(1, Number(page) || 1),
+			limit: Math.min(100, Math.max(1, Number(limit) || 10)),
+		};
+
+		logger.info("Fetching products", { filter, pagination });
+		const result = await this.productService.getAll(filter, pagination);
+		logger.info("Fetched products", {
+			count: result.data.length,
+			total: result.total,
+		});
+		res.json(result);
 	}
 
 	async getOne(req: ProductParamsRequest, res: Response, next: NextFunction) {
