@@ -7,6 +7,7 @@ import express, {
 } from "express";
 import categoryRouter from "./category/category-router";
 import { globalError } from "./middleware/globalError";
+import productRouter from "./product/product-router";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.all("/health", (req, res) => {
 });
 
 app.use("/categories", categoryRouter);
+app.use("/products", productRouter);
 
 // biome-ignore lint: correctness/noUnusedVariables
 app.use(globalError);
