@@ -31,4 +31,4 @@ export type CreateProductRequest = Request<
 	Record<string, never>,
 	unknown,
 	CreateProductBody
->;
+> & { file?: Express.Multer.File };

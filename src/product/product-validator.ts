@@ -21,13 +21,6 @@ export default [
 		.notEmpty()
 		.withMessage("Product description must not be empty"),
 
-	// image
-	body("image")
-		.exists({ checkFalsy: true })
-		.withMessage("Product image is required")
-		.isString()
-		.withMessage("Product image must be a string"),
-
 	// priceConfiguration
 	body("priceConfiguration")
 		.exists()
