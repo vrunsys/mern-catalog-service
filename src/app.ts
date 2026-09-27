@@ -1,5 +1,6 @@
 import config from "config";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, {
 	type NextFunction,
 	type Request,
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: config.get("origins"), credentials: true }));
 // biome-ignore lint: correctness/noUnusedVariables
 app.all("/health", (req, res) => {
 	res.status(200).json({ status: "OK" });
