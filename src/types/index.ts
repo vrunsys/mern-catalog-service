@@ -5,12 +5,18 @@ export interface AuthCookie {
 	accessToken: string;
 }
 
+export interface AuthPayload {
+	id: number;
+	role: string;
+	iat: number;
+	exp: number;
+	tenantId: number | null;
+}
+
 export interface AuthRequest extends Request {
-	auth: {
-		id: number;
-		role: string;
-		iat: number;
-		exp: number;
-		tenantId: number | null;
-	};
+	auth: AuthPayload;
+}
+
+export interface OptionalAuthRequest extends Request {
+	auth?: AuthPayload;
 }

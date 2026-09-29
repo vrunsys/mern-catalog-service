@@ -8,6 +8,7 @@ import type { ProductService } from "./product-service";
 import type {
 	CreateProductRequest,
 	GetAllProductsRequest,
+	GetProductRequest,
 	ProductFilter,
 	ProductParamsRequest,
 	UpdateProductRequest,
@@ -83,15 +84,22 @@ export class ProductController {
 			filter.name = { $regex: q, $options: "i" };
 		}
 
-		// Managers are always scoped to their own tenant, ignoring query param
-		if (req.auth.role === Role.MANAGER) {
+		const isStaff =
+			req.auth?.role === Role.ADMIN || req.auth?.role === Role.MANAGER;
+
+		// Managers are always scoped to their own tenant, ignoring query param.
+		if (req.auth?.role === Role.MANAGER) {
 			filter.tenantId = String(req.auth.tenantId);
 		} else if (tenantId) {
 			filter.tenantId = tenantId;
 		}
 
 		if (categoryId) filter.categoryId = categoryId;
-		if (isPublish !== undefined) filter.isPublish = isPublish === "true";
+		if (isStaff && isPublish !== undefined) {
+			filter.isPublish = isPublish === "true";
+		} else if (!isStaff) {
+			filter.isPublish = true;
+		}
 
 		const pagination = {
 			page: Math.max(1, Number(page) || 1),
@@ -107,14 +115,22 @@ export class ProductController {
 		res.json(result);
 	}
 
-	async getOne(req: ProductParamsRequest, res: Response, next: NextFunction) {
+	async getOne(req: GetProductRequest, res: Response, next: NextFunction) {
 		const { id } = req.params;
 
-		// Admin can access any product; manager scoped to their tenant
-		const tenantId =
-			req.auth.role === Role.ADMIN ? null : String(req.auth.tenantId);
+		const isStaff =
+			req.auth?.role === Role.ADMIN || req.auth?.role === Role.MANAGER;
 
-		const product = await this.productService.getOne(id, tenantId);
+		// Managers are scoped to their tenant. Public/customer reads only return
+		// published products.
+		const tenantId =
+			req.auth?.role === Role.MANAGER ? String(req.auth.tenantId) : null;
+
+		const product = await this.productService.getOne(
+			id,
+			tenantId,
+			isStaff ? undefined : true,
+		);
 		logger.info("Fetched product", { id, tenantId });
 		res.json(product);
 	}

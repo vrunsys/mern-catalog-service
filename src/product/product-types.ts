@@ -1,5 +1,4 @@
-import type { Request } from "express";
-import type { AuthRequest } from "../types";
+import type { AuthRequest, OptionalAuthRequest } from "../types";
 
 export interface PriceConfigurationEntry {
 	priceType: "base" | "additional";
@@ -45,6 +44,10 @@ export type ProductParamsRequest = AuthRequest & {
 	params: { id: string };
 };
 
+export type GetProductRequest = OptionalAuthRequest & {
+	params: { id: string };
+};
+
 export interface ProductFilter {
 	tenantId?: string;
 	categoryId?: string;
@@ -65,7 +68,7 @@ export interface PaginatedResult<T> {
 	totalPages: number;
 }
 
-export type GetAllProductsRequest = AuthRequest & {
+export type GetAllProductsRequest = OptionalAuthRequest & {
 	query: {
 		q?: string;
 		tenantId?: string;

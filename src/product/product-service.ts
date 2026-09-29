@@ -51,10 +51,13 @@ export class ProductService {
 		};
 	}
 
-	async getOne(id: string, tenantId?: string | null) {
+	async getOne(id: string, tenantId?: string | null, isPublish?: boolean) {
 		const filter: Record<string, unknown> = { _id: id };
 		if (tenantId) {
 			filter.tenantId = tenantId;
+		}
+		if (isPublish !== undefined) {
+			filter.isPublish = isPublish;
 		}
 		const product = await ProductModel.findOne(filter);
 		if (!product) {

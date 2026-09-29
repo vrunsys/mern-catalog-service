@@ -1,7 +1,7 @@
-import type { NextFunction, Request, RequestHandler, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 import { Role } from "../constants";
-import authenticate from "../middleware/authenticate";
+import authenticate, { optionalAuthenticate } from "../middleware/authenticate";
 import { canAccess } from "../middleware/canAccess";
 import upload from "../middleware/upload";
 import { asyncWrapper } from "../utils/wrapper";
@@ -51,16 +51,14 @@ router.patch(
 
 router.get(
 	"/",
-	authenticate,
-	canAccess([Role.ADMIN, Role.MANAGER]),
+	optionalAuthenticate,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	asyncWrapper(productController.getAll.bind(productController) as any),
 );
 
 router.get(
 	"/:id",
-	authenticate,
-	canAccess([Role.ADMIN, Role.MANAGER]),
+	optionalAuthenticate,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	asyncWrapper(productController.getOne.bind(productController) as any),
 );
