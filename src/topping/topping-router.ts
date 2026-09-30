@@ -46,8 +46,6 @@ router.patch(
 
 router.get(
 	"/",
-	authenticate,
-	canAccess([Role.ADMIN, Role.MANAGER]),
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	asyncWrapper(toppingController.getAll.bind(toppingController) as any),
 );

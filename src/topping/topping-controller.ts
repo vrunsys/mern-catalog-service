@@ -81,9 +81,7 @@ export class ToppingController {
 		if (q) filter.name = { $regex: q, $options: "i" };
 
 		// Manager always scoped to their own tenant
-		if (req.auth.role === Role.MANAGER) {
-			filter.tenantId = String(req.auth.tenantId);
-		} else if (tenantId) {
+		if (tenantId) {
 			filter.tenantId = tenantId;
 		}
 
